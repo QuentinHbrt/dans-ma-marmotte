@@ -4,7 +4,7 @@ import { Container, Heading } from "@theme-ui/components";
 function App() {
   return (
     <Container>
-      <Heading>Dans ma Marmotte</Heading>
+      <Heading>{"Dans ma Marmotte"}</Heading>
     </Container>
   );
 }
