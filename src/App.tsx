@@ -36,7 +36,7 @@ function App() {
     <Container>
       <Heading>{"Dans ma Marmotte"}</Heading>
       <ProductsList products={products} />
-      <ProductForm onSubmitProduct={addProduct} />
+      <ProductForm onSubmitProduct={addProduct} storagesProperty={storages} />
       <RoomForm onSubmitRoom={addRoom} />
       <StorageForm onSubmitStorage={addStorage} roomsProperty={listOfRooms} />
     </Container>
