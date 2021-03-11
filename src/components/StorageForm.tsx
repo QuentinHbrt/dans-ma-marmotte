@@ -3,8 +3,8 @@ import { Input, Select } from 'theme-ui';
 import { Room, Storage } from '../api/types';
 
 type StorageFormProperties = {
-    readonly onSubmitStorage: (newStorage: Storage) => void
-    readonly roomsProperty: Room[]
+    onSubmitStorage: (newStorage: Storage) => void
+    roomsProperty: Room[]
 }
 
 export const StorageForm: FC<StorageFormProperties> = (properties) => {

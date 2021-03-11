@@ -3,7 +3,7 @@ import { Input, Select } from 'theme-ui';
 import { Room } from '../api/types';
 
 type RoomFormProps = {
-    readonly onSubmitRoom: (newRoom: Room) => void
+    onSubmitRoom: (newRoom: Room) => void
 }
 
 const DEFAULT_NAME = ''

@@ -1,8 +1,9 @@
+import { Button } from '@theme-ui/components';
 import React, { FC } from 'react';
 import { Product } from '../api/types';
 
 type ProductItemProps = {
-    readonly product: Product
+    product: Product
 }
 
 export const ProductItem: FC<ProductItemProps> = (props) => {
@@ -10,6 +11,7 @@ export const ProductItem: FC<ProductItemProps> = (props) => {
         <li>
             {props.product.name}
             {props.product.category}
+            <Button>{'DELETE'}</Button>
         </li>
     )
 }

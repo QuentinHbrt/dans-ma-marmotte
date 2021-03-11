@@ -6,12 +6,23 @@ import { ProductForm } from './components/ProductForm';
 import { Product, Room, Storage } from './api/types';
 import { RoomForm } from './components/RoomForm';
 import { StorageForm } from './components/StorageForm';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { RoomsList } from './components/RoomsList';
+import { StoragesList } from './components/StoragesList';
 
 function App() {
 
   const [products, setProducts] = useState<Product[]>(PRODUCTS)
   const [listOfRooms, setListOfRooms] = useState<Room[]>([])
   const [storages, setStorages] = useState<Storage[]>([])
+
+  function removeStorage(storageToRemove: Storage) {
+    console.log('APP : delete')
+    const newArrayOfStorages = storages.filter(storage => storage.id !== storageToRemove.id);
+    console.log(newArrayOfStorages)
+    setStorages(newArrayOfStorages);
+  };
 
   function addProduct(newProduct: Product) {
     const newArrayOfProducts = [...products, newProduct]
@@ -33,13 +44,19 @@ function App() {
   console.log('storages', storages)
 
   return (
-    <Container>
-      <Heading>{"Dans ma Marmotte"}</Heading>
-      <ProductsList products={products} />
-      <ProductForm onSubmitProduct={addProduct} storagesProperty={storages} />
-      <RoomForm onSubmitRoom={addRoom} />
-      <StorageForm onSubmitStorage={addStorage} roomsProperty={listOfRooms} />
-    </Container>
+    <Router>
+      <Container>
+        <Navbar />
+        <Heading>{"Dans ma Marmotte"}</Heading>
+        <Route path={"/ProductsList"} render={() => <ProductsList products={products} />} />
+        <Route path={"/ProductForm"} render={() => <ProductForm onSubmitProduct={addProduct} storagesProperty={storages} roomsProperty={listOfRooms} />} />
+        <Route path={"/RoomForm"} render={() => <RoomForm onSubmitRoom={addRoom} />} />
+        <Route path={"/StorageForm"} render={() => <StorageForm onSubmitStorage={addStorage} roomsProperty={listOfRooms} />} />
+        <Route path={"/RoomsList"} render={() => <RoomsList rooms={listOfRooms} />} />
+        <Route path={"/StoragesList"} render={() => <StoragesList storages={storages} onDeleteStorage={removeStorage} />} />
+      </Container>
+    </Router>
+
   );
 }
 

@@ -1,11 +1,12 @@
 import React, { ChangeEvent, FC, useState } from 'react';
 import { Input, Select } from 'theme-ui';
-import { Product, Storage } from '../api/types';
+import { Product, Room, Storage } from '../api/types';
 
 
 type ProductFormProps = {
-    readonly onSubmitProduct: (newProduct: Product) => void
-    readonly storagesProperty: Storage[]
+    onSubmitProduct: (newProduct: Product) => void
+    storagesProperty: Storage[]
+    roomsProperty: Room[]
 }
 
 export const ProductForm: FC<ProductFormProps> = (properties) => {
@@ -56,7 +57,11 @@ export const ProductForm: FC<ProductFormProps> = (properties) => {
             <Input onChange={handleChangeCategory} placeholder='category' type="text" name="category" value={categoryValue} id="category" />
             <Select onChange={handleChangeStorage} value={selectedStorageId}>
                 <option value={''} >{'CHOISIR ...'}</option>
-                {properties.storagesProperty.map((storage) => <option key={storage.id} value={storage.id}>{storage.name}</option>)}
+                {properties.storagesProperty.map((storage) => {
+                    const foundRoom = properties.roomsProperty.find(room => room.id === storage.roomId)
+                    const label = `${storage.name} - pièce : ${foundRoom ? foundRoom.name : 'pas trouvé'}`;
+                    return <option key={storage.id} value={storage.id}>{label}</option>
+                })}
             </Select>
             <Input type="submit" value="Envoyer" />
         </form>
