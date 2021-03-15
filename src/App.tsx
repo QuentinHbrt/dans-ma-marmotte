@@ -24,6 +24,20 @@ function App() {
     setStorages(newArrayOfStorages);
   };
 
+  function removeProduct(productToRemove: Product) {
+    console.log('APP : delete')
+    const newArrayOfProducts = products.filter(product => product.id !== productToRemove.id);
+    console.log(newArrayOfProducts)
+    setProducts(newArrayOfProducts);
+  };
+
+  function removeRoom(roomToRemove: Room) {
+    console.log('APP : delete')
+    const newArrayOfRooms = listOfRooms.filter(room => room.id !== roomToRemove.id);
+    console.log(newArrayOfRooms)
+    setListOfRooms(newArrayOfRooms);
+  };
+
   function addProduct(newProduct: Product) {
     const newArrayOfProducts = [...products, newProduct]
     setProducts(newArrayOfProducts);
@@ -48,12 +62,12 @@ function App() {
       <Container>
         <Navbar />
         <Heading>{"Dans ma Marmotte"}</Heading>
-        <Route path={"/ProductsList"} render={() => <ProductsList products={products} />} />
+        <Route path={"/ProductsList"} render={() => <ProductsList products={products} onDeleteProduct={removeProduct} />} />
         <Route path={"/ProductForm"} render={() => <ProductForm onSubmitProduct={addProduct} storagesProperty={storages} roomsProperty={listOfRooms} />} />
         <Route path={"/RoomForm"} render={() => <RoomForm onSubmitRoom={addRoom} />} />
         <Route path={"/StorageForm"} render={() => <StorageForm onSubmitStorage={addStorage} roomsProperty={listOfRooms} />} />
-        <Route path={"/RoomsList"} render={() => <RoomsList rooms={listOfRooms} />} />
-        <Route path={"/StoragesList"} render={() => <StoragesList storages={storages} onDeleteStorage={removeStorage} />} />
+        <Route path={"/RoomsList"} render={() => <RoomsList rooms={listOfRooms} onDeleteRoom={removeRoom} storages={storages} />} />
+        <Route path={"/StoragesList"} render={() => <StoragesList storages={storages} onDeleteStorage={removeStorage} rooms={listOfRooms} products={products} />} />
       </Container>
     </Router>
 

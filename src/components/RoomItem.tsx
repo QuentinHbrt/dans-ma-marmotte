@@ -1,17 +1,22 @@
-import { Button } from '@theme-ui/components';
+import { Button, Card } from '@theme-ui/components';
 import React, { FC } from 'react';
 import { Room } from '../api/types';
 
 type RoomItemProps = {
     roomProperty: Room
+    onDeleteRoomProperty: (roomToRemove: Room) => void
 }
 
 export const RoomItem: FC<RoomItemProps> = (props) => {
+
+    function handleDelete() {
+        props.onDeleteRoomProperty(props.roomProperty)
+    }
+
     return (
-        <li>
-            {props.roomProperty.color} <br />
+        <Card sx={{ background: props.roomProperty.color }}>
             {props.roomProperty.name}
-            <Button>{'DELETE'}</Button>
-        </li>
+            <Button onClick={handleDelete}>{'DELETE'}</Button>
+        </Card>
     )
 }

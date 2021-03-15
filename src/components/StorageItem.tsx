@@ -1,10 +1,11 @@
-import { Button } from '@theme-ui/components';
+import { Button, Card } from '@theme-ui/components';
 import React, { FC } from 'react';
-import { Storage } from '../api/types';
+import { Room, Storage } from '../api/types';
 
 type StorageItemProps = {
     storageProperty: Storage
     onDeleteStorageProperty: (storageToRemove: Storage) => void
+    roomProperty?: Room
 }
 
 export const StorageItem: FC<StorageItemProps> = (props) => {
@@ -14,10 +15,12 @@ export const StorageItem: FC<StorageItemProps> = (props) => {
         props.onDeleteStorageProperty(props.storageProperty)
     }
 
+    const style = props.roomProperty ? { background: props.roomProperty.color } : undefined
+
     return (
-        <li>
-            {props.storageProperty.name}
+        <Card sx={style}>
+            {`${props.storageProperty.name} - pièce : ${props.roomProperty ? props.roomProperty.name : 'pas trouvé'}`}
             <Button onClick={handleDelete}>{'DELETE'}</Button>
-        </li>
+        </Card>
     )
 }
