@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-lambda');
+const { ApolloServer, gql, UserInputError } = require('apollo-server-lambda');
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -30,31 +30,104 @@ const typeDefs = gql`
   type Mutation {
     addRoom(name: String!, color: String!, id: ID! ): Room
     removeRoom(id: ID!): Room
+    addStorage(name: String!, id: ID!, roomId: ID!): Storage
+    removeStorage(id: ID!): Storage
+    addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product
+    removeProduct(id: ID!): Product
   }
 `;
 
 
 let rooms = []
-// let storages = []
-// let products = []
+let storages = []
+let products = []
 
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
     rooms: () => rooms,
-    storages: () => ([{ id: 'storage-1', name: 'boite 1', roomId: 'room-1' }]),
-    products: () => ([{ id: 'product-1', name: 'draps', category: 'literie', storageId: 'storage-1' }]),
+    storages: () => storages,
+    products: () => products,
   },
   Mutation: {
     addRoom: (_, { name, id, color }) => {
-      const newRoom = { name, color, id: `room-${id}` }
+      const newRoom = {
+        name,
+        color,
+        id: `room-${id}`
+      }
       rooms = [...rooms, newRoom]
       return newRoom
     },
     removeRoom: (_, { id }) => {
       const roomToRemove = rooms.find(room => room.id === id)
+      if (!roomToRemove) {
+        throw new UserInputError(`La piéce n'existe pas`)
+      }
+      let count = 0
+      storages.forEach((storage) => {
+        if (storage.roomId === id) {
+          count = count + 1
+        }
+      })
+      if (count > 0) {
+        throw new UserInputError(`La pièce ${roomToRemove.name} est utilisée par ${count} rangement(s)`)
+      }
+
       rooms = rooms.filter(room => room.id !== id)
       return roomToRemove
+    },
+    addStorage: (_, { name, id, roomId }) => {
+      const roomToAssociate = rooms.find(room => room.id === roomId)
+      if (!roomToAssociate) {
+        throw new UserInputError(`la pièce demandée pour ce rangement n'existe pas`)
+      }
+      const newStorage = {
+        name,
+        id: `storage-${id}`,
+        roomId
+      }
+      storages = [...storages, newStorage]
+      return newStorage
+    },
+    removeStorage: (_, { id }) => {
+      const storageToRemove = storages.find(storage => storage.id === id)
+      if (!storageToRemove) {
+        throw new UserInputError(`Le rangement n'existe pas`)
+      }
+      let count = 0
+      rooms.forEach((room) => {
+        if (room.storageId === id) {
+          count = count + 1
+        }
+      })
+      if (count > 0) {
+        throw new UserInputError(`Le rangement ${storageToRemove.name} est utilisé par ${count} pièce(s)`)
+      }
+      storages = storages.filter(storage => storage.id !== id)
+      return storageToRemove
+    },
+    addProduct: (_, { name, id, storageId, category }) => {
+      const storageToAssociate = storages.find(storage => storage.id === storageId)
+      if (!storageToAssociate) {
+        throw new UserInputError(`le rangement demandé pour ce produit n'existe pas`)
+      }
+      const newProduct = {
+        name,
+        id: `product-${id}`,
+        storageId,
+        category
+      }
+      products = [...products, newProduct]
+      return newProduct
+    },
+    removeProduct: (_, { id }) => {
+      const productToRemove = products.find(product => product.id === id)
+      if (!productToRemove) {
+        throw new UserInputError(`Le produit n'existe pas`)
+      }
+      products = products.filter(product => product.id !== id)
+      return productToRemove
     }
   }
 };
