@@ -1,6 +1,8 @@
+import { ApolloProvider } from "@apollo/client";
 import React from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider } from "theme-ui";
+import { GraphqlClient } from "./api/graphqlClient";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { theme } from "./theme";
@@ -8,7 +10,9 @@ import { theme } from "./theme";
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <ApolloProvider client={GraphqlClient}>
+        <App />
+      </ApolloProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
