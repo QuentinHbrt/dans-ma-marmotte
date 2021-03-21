@@ -1,5 +1,7 @@
-import { Card } from '@theme-ui/components';
+import { useQuery } from '@apollo/client';
+import { Card, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
+import { Queries } from '../api/graphqlClient';
 import { Product, Room, Storage } from '../api/types';
 import { ProductForm } from '../components/ProductForm';
 import { ProductsList } from '../components/ProductsList';
@@ -12,6 +14,10 @@ type ProductsPageProps = {
 }
 
 export const ProductsPage: FC<ProductsPageProps> = (props) => {
+
+    const query = useQuery<{ products: Product[] }>(Queries.PRODUCTS)
+
+    console.log('GQL', query.loading, query.data, query.called, query.error)
 
     function addProduct(newProduct: Product) {
         const newArrayOfProducts = [...props.products, newProduct]
@@ -26,7 +32,8 @@ export const ProductsPage: FC<ProductsPageProps> = (props) => {
 
     return (
         <Card>
-            <ProductsList products={props.products} onDeleteProduct={removeProduct} />
+            {query.loading && <Text>{'CHARGEMENT...'}</Text>}
+            {query.data && <ProductsList products={query.data.products} onDeleteProduct={removeProduct} />}
             <ProductForm onSubmitProduct={addProduct} storagesProperty={props.storages} roomsProperty={props.rooms} />
         </Card>
     )
