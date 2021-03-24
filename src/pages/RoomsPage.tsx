@@ -1,51 +1,48 @@
-import { Card } from '@theme-ui/components';
+import { useMutation, useQuery } from '@apollo/client';
+import { Card, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
-import { Room, Storage } from '../api/types';
+import { Mutations, Queries } from '../api/graphqlClient';
+import { Room } from '../api/types';
 import { RoomForm } from '../components/RoomForm';
 import { RoomsList } from '../components/RoomsList';
 
-type RoomsPageProps = {
-    rooms: Room[]
-    storages: Storage[]
-    onRoomsChange: (rooms: Room[]) => void
-}
 
-export const RoomsPage: FC<RoomsPageProps> = (props) => {
+export const RoomsPage: FC = () => {
 
-    function removeRoom(roomToRemove: Room) {
-        const newArrayOfRooms = props.rooms.filter(room => room.id !== roomToRemove.id);
-        props.onRoomsChange(newArrayOfRooms);
-    };
+    const roomsQuery = useQuery<{ rooms: Room[] }>(Queries.ROOMS)
 
-    function addRoom(newRoom: Room) {
-        const newArrayOfRooms = [...props.rooms, newRoom]
-        props.onRoomsChange(newArrayOfRooms);
+    console.log('GQL', roomsQuery.loading, roomsQuery.data, roomsQuery.called, JSON.stringify(roomsQuery.error))
+
+    const [addRoomMut] = useMutation<{ addRoom: Room }, Room>(Mutations.ADD_ROOM)
+    const [removeRoomMut] = useMutation<{ removeRoom: Room }, { id: string }>(Mutations.REMOVE_ROOM)
+
+    function addRoomGQL(newRoom: Room) {
+        const mesVariables = {
+            name: newRoom.name,
+            color: newRoom.color,
+            id: newRoom.id
+        }
+        const mutOptions = {
+            variables: mesVariables
+        }
+        addRoomMut(mutOptions).then(() => roomsQuery.refetch()).catch((error) => alert(error))
     }
 
-
-    function handleDelete(roomToDelete: Room) {
-        let count = 0;
-
-        // pour chaque storage comparer le .roomid avec l'id de la room à supprimer
-        props.storages.forEach((storage) => {
-            if (storage.roomId === roomToDelete.id) {
-                count = count + 1
-            }
-        })
-
-        // const count = props.storages.reduce((counter, storage) => (storage.roomId === roomToDelete.id ? counter + 1 : counter), 0)
-
-        if (count > 0) {
-            alert(`La pièce ${roomToDelete.name} est utilisée par ${count} rangement(s)`)
-        } else {
-            removeRoom(roomToDelete)
+    function removeRoomGQL(roomToRemove: Room) {
+        const mesVariables = {
+            id: roomToRemove.id
         }
+        const mutOptions = {
+            variables: mesVariables
+        }
+        removeRoomMut(mutOptions).then(() => roomsQuery.refetch()).catch((error) => alert(error))
     }
 
     return (
         <Card>
-            <RoomsList rooms={props.rooms} onDeleteRoom={handleDelete} />
-            <RoomForm onSubmitRoom={addRoom} />
+            {roomsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
+            {roomsQuery.data && <RoomsList rooms={roomsQuery.data.rooms} onDeleteRoom={removeRoomGQL} />}
+            <RoomForm onSubmitRoom={addRoomGQL} />
         </Card>
     )
 }

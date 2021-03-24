@@ -1,4 +1,8 @@
 const { ApolloServer, gql, UserInputError } = require('apollo-server-lambda');
+const faunadb = require("faunadb");
+const q = faunadb.query;
+
+let client = new faunadb.Client({ secret: process.env.FAUNA });
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -45,20 +49,55 @@ let products = []
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    rooms: () => rooms,
-    storages: () => storages,
-    products: () => products,
+    rooms: async () => {
+      try {
+        const results = await client.query(
+          q.Paginate(q.Match(q.Index("all_rooms")))
+        );
+        console.log('RESULTS', results)
+        return results.data.map(([ref, name, color]) => ({
+          id: ref.id,
+          name,
+          color
+        }));
+      } catch (error) {
+        console.log('errrrrreur', error)
+      }
+
+    },
+    storages: async () => {
+      try {
+        const results = await client.query(
+          q.Paginate(q.Match(q.Index("all_storages")))
+        );
+        console.log('RESULTS', results)
+        return results.data.map(([ref, name, roomId]) => ({
+          id: ref.id,
+          name,
+          roomId: ref.roomId
+        }));
+      } catch (error) {
+        console.log('errrrrreur', error)
+      }
+    },
+    products: async () => products,
   },
   Mutation: {
-    addRoom: (_, { name, id, color }) => {
-      const newRoom = {
-        name,
-        color,
-        id: `room-${id}`
+    addRoom: async (_, { name, color }) => {
+      const results = await client.query(
+        q.Create(q.Collection("rooms"), {
+          data: {
+            name,
+            color
+          }
+        })
+      );
+      return {
+        ...results.data,
+        id: results.ref.id
       }
-      rooms = [...rooms, newRoom]
-      return newRoom
     },
+
     removeRoom: (_, { id }) => {
       const roomToRemove = rooms.find(room => room.id === id)
       if (!roomToRemove) {
