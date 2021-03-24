@@ -1,40 +1,54 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Card, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
-import { Queries } from '../api/graphqlClient';
+import { Mutations, Queries } from '../api/graphqlClient';
 import { Product, Room, Storage } from '../api/types';
 import { ProductForm } from '../components/ProductForm';
 import { ProductsList } from '../components/ProductsList';
 
-type ProductsPageProps = {
-    products: Product[]
-    storages: Storage[]
-    rooms: Room[]
-    onProductsChange: (products: Product[]) => void
-}
+export const ProductsPage: FC = () => {
 
-export const ProductsPage: FC<ProductsPageProps> = (props) => {
+    const productsQuery = useQuery<{ products: Product[] }>(Queries.PRODUCTS)
+    const storagesQuery = useQuery<{ storages: Storage[] }>(Queries.STORAGES)
+    const roomsQuery = useQuery<{ rooms: Room[] }>(Queries.ROOMS)
 
-    const query = useQuery<{ products: Product[] }>(Queries.PRODUCTS)
+    console.log('GQL', productsQuery.loading, productsQuery.data, productsQuery.called, productsQuery.error)
 
-    console.log('GQL', query.loading, query.data, query.called, query.error)
+    const [addProductMut] = useMutation<{ addProduct: Product }, Product>(Mutations.ADD_PRODUCT)
+    const [removeProductMut] = useMutation<{ removeProduct: Product }, { id: string }>(Mutations.REMOVE_PRODUCT)
 
-    function addProduct(newProduct: Product) {
-        const newArrayOfProducts = [...props.products, newProduct]
-        props.onProductsChange(newArrayOfProducts);
+
+    function addProductGQL(newProduct: Product) {
+        console.log('CALL ADD PRODUCT MUTATION', newProduct)
+
+        const mesVariables = {
+            id: newProduct.id,
+            name: newProduct.name,
+            category: newProduct.category,
+            storageId: newProduct.storageId
+        }
+        const mutOptions = {
+            variables: mesVariables,
+        }
+        addProductMut(mutOptions).then(() => productsQuery.refetch()).catch((error) => alert(error))
     }
+    function removeProductGQL(productToRemove: Product) {
+        console.log('CALL REMOVE PRODUCT MUTATION', productToRemove)
 
-
-    function removeProduct(productToRemove: Product) {
-        const newArrayOfProducts = props.products.filter(product => product.id !== productToRemove.id);
-        props.onProductsChange(newArrayOfProducts);
-    };
+        const mesVariables = {
+            id: productToRemove.id,
+        }
+        const mutOptions = {
+            variables: mesVariables,
+        }
+        removeProductMut(mutOptions).then(() => productsQuery.refetch()).catch((error) => alert(error))
+    }
 
     return (
         <Card>
-            {query.loading && <Text>{'CHARGEMENT...'}</Text>}
-            {query.data && <ProductsList products={query.data.products} onDeleteProduct={removeProduct} />}
-            <ProductForm onSubmitProduct={addProduct} storagesProperty={props.storages} roomsProperty={props.rooms} />
+            {productsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
+            {productsQuery.data && <ProductsList products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
+            {storagesQuery.data && roomsQuery.data && <ProductForm onSubmitProduct={addProductGQL} storagesProperty={storagesQuery.data.storages} roomsProperty={roomsQuery.data.rooms} />}
         </Card>
     )
 }

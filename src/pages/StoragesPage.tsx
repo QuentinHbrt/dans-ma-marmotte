@@ -1,49 +1,49 @@
-import { Card } from '@theme-ui/components';
+import { useMutation, useQuery } from '@apollo/client';
+import { Card, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
-import { Product, Room, Storage } from '../api/types';
+import { Mutations, Queries } from '../api/graphqlClient';
+import { Room, Storage } from '../api/types';
 import { StorageForm } from '../components/StorageForm';
 import { StoragesList } from '../components/StoragesList';
 
-type StoragesPageProps = {
-    storages: Storage[]
-    rooms: Room[]
-    products: Product[]
-    onStoragesChange: (storages: Storage[]) => void
-}
 
-export const StoragesPage: FC<StoragesPageProps> = (props) => {
+export const StoragesPage: FC = () => {
 
-    function removeStorage(storageToRemove: Storage) {
-        console.log('APP : delete')
-        const newArrayOfStorages = props.storages.filter(storage => storage.id !== storageToRemove.id);
-        console.log(newArrayOfStorages)
-        props.onStoragesChange(newArrayOfStorages);
-    };
+    const storagesQuery = useQuery<{ storages: Storage[] }>(Queries.STORAGES)
+    const roomsQuery = useQuery<{ rooms: Room[] }>(Queries.ROOMS)
 
-    function addStorage(newStorage: Storage) {
-        const newArrayOfStorages = [...props.storages, newStorage]
-        props.onStoragesChange(newArrayOfStorages);
+    console.log('GQL', storagesQuery.loading, storagesQuery.data, storagesQuery.called, storagesQuery.error)
+
+    const [addStorageMut] = useMutation<{ addStorage: Storage }, Storage>(Mutations.ADD_STORAGE)
+    const [removeStorageMut] = useMutation<{ removeStorage: Storage }, { id: string }>(Mutations.REMOVE_STORAGE)
+
+    function addStorageGQL(newStorage: Storage) {
+        const mesVariables = {
+            name: newStorage.name,
+            roomId: newStorage.roomId,
+            id: newStorage.id
+        }
+        const mutOptions = {
+            variables: mesVariables
+        }
+        addStorageMut(mutOptions).then(() => storagesQuery.refetch()).catch((error) => alert(error))
     }
 
-
-    function handleDelete(storageToDelete: Storage) {
-        let count = 0;
-        props.products.forEach((product) => {
-            if (product.storageId === storageToDelete.id) {
-                count = count + 1
-            }
-        })
-        if (count > 0) {
-            alert(`le rangement ${storageToDelete.name} est utilisé par ${count} produit(s)`)
-        } else {
-            removeStorage(storageToDelete)
+    function removeStorageGQL(storageToRemove: Storage) {
+        const mesVariables = {
+            id: storageToRemove.id
         }
+        const mutOptions = {
+            variables: mesVariables
+        }
+        removeStorageMut(mutOptions).then(() => storagesQuery.refetch()).catch((error) => alert(error))
     }
 
     return (
         <Card>
-            <StoragesList storages={props.storages} onDeleteStorage={handleDelete} rooms={props.rooms} />
-            <StorageForm onSubmitStorage={addStorage} roomsProperty={props.rooms} />
+            {storagesQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
+            {storagesQuery.data && roomsQuery.data && <StoragesList storages={storagesQuery.data.storages} onDeleteStorage={removeStorageGQL} rooms={roomsQuery.data.rooms} />}
+            {roomsQuery.data && <StorageForm onSubmitStorage={addStorageGQL} roomsProperty={roomsQuery.data.rooms} />}
         </Card>
     )
 }
