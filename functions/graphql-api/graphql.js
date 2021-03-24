@@ -1,4 +1,8 @@
 const { ApolloServer, gql, UserInputError } = require('apollo-server-lambda');
+const faunadb = require("faunadb");
+const q = faunadb.query;
+
+let client = new faunadb.Client({ secret: process.env.FAUNA });
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -45,7 +49,15 @@ let products = []
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    rooms: () => rooms,
+    rooms: async () => {
+      const results = await client.query(q.Get(q.Collection("rooms")));
+      console.log(results)
+      return results.data.map(([ref, name, color]) => ({
+        id: ref.id,
+        name,
+        color
+      }));
+    },
     storages: () => storages,
     products: () => products,
   },
