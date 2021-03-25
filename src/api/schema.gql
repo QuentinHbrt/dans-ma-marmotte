@@ -1,0 +1,24 @@
+type Room {
+    id: ID!
+    name: String!
+    color: String!
+  }
+  
+  type Storage {
+    id: ID!
+    name: String!
+    roomId: ID!
+  }
+
+  type Product {
+    id: ID!
+    name: String!
+    storageId: ID!
+    category: String!
+  }
+
+  type Query {
+    rooms: [Room]
+    storages: [Storage]
+    products: [Product]
+  }
