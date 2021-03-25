@@ -36,7 +36,7 @@ export const StorageForm: FC<StorageFormProperties> = (properties) => {
 
     }
 
-    console.log(properties.roomsProperty)
+    console.log('ROOM', properties.roomsProperty);
 
     return (
         <form onSubmit={handleSubmit}>

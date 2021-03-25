@@ -17,6 +17,9 @@ export const StoragesPage: FC = () => {
     const [addStorageMut] = useMutation<{ addStorage: Storage }, Storage>(Mutations.ADD_STORAGE)
     const [removeStorageMut] = useMutation<{ removeStorage: Storage }, { id: string }>(Mutations.REMOVE_STORAGE)
 
+    console.log('RoomQuery', roomsQuery)
+    console.log('RoomData', roomsQuery.data)
+
     function addStorageGQL(newStorage: Storage) {
         const mesVariables = {
             name: newStorage.name,

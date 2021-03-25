@@ -52,7 +52,7 @@ const resolvers = {
     rooms: async () => {
       try {
         const results = await client.query(
-          q.Paginate(q.Match(q.Indexes("all_rooms")))
+          q.Paginate(q.Match(q.Index("all_rooms")))
         );
         console.log('RESULTS', results)
         return results.data.map(([ref, name, color]) => ({
@@ -62,13 +62,14 @@ const resolvers = {
         }));
       } catch (error) {
         console.log('errrrrreur', error)
+        return Promise.reject(error)
       }
 
     },
     storages: async () => {
       try {
         const results = await client.query(
-          q.Paginate(q.Match(q.Indexes("all_storages")))
+          q.Paginate(q.Match(q.Index("all_storages")))
         );
         console.log('RESULTS', results)
         return results.data.map(([ref, name, roomId]) => ({
