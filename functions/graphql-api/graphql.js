@@ -52,7 +52,7 @@ const resolvers = {
     rooms: async () => {
       try {
         const results = await client.query(
-          q.Paginate(q.Match(q.Index("all_rooms")))
+          q.Paginate(q.Match(q.Indexes("all_rooms")))
         );
         console.log('RESULTS', results)
         return results.data.map(([ref, name, color]) => ({
@@ -68,13 +68,13 @@ const resolvers = {
     storages: async () => {
       try {
         const results = await client.query(
-          q.Paginate(q.Match(q.Index("all_storages")))
+          q.Paginate(q.Match(q.Indexes("all_storages")))
         );
         console.log('RESULTS', results)
         return results.data.map(([ref, name, roomId]) => ({
           id: ref.id,
           name,
-          roomId: ref.roomId
+          roomId
         }));
       } catch (error) {
         console.log('errrrrreur', error)
