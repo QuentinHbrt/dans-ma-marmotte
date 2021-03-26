@@ -65,6 +65,7 @@ type Query {
     _size: Int
     _cursor: String
   ): RoomPage!
+  rooms: [Room]
   findStorageByID(id: ID!): Storage
   storages(
     _size: Int
