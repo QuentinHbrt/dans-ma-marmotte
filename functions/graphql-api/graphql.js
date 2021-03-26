@@ -6,37 +6,92 @@ let client = new faunadb.Client({ secret: process.env.FAUNA });
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
-  type Room {
-    id: ID!
-    name: String!
-    color: String!
-  }
+type Room {
+  name: String!
+  _id: ID!
+  color: String!
+  id: ID!
+  _ts: Long!
+}
+
+input RoomInput {
+  id: ID!
+  name: String!
+  color: String!
+}
+
+type RoomPage {
+  data: [Room]!
+  after: String
+  before: String
+}
   
   type Storage {
-    id: ID!
-    name: String!
-    roomId: ID!
-  }
+  roomId: ID!
+  name: String!
+  _id: ID!
+  id: ID!
+  _ts: Long!
+}
+
+input StorageInput {
+  id: ID!
+  name: String!
+  roomId: ID!
+}
+
+type StoragePage {
+  data: [Storage]!
+  after: String
+  before: String
+}
 
   type Product {
-    id: ID!
-    name: String!
-    storageId: ID!
-    category: String!
-  }
+  name: String!
+  storageId: ID!
+  _id: ID!
+  id: ID!
+  category: String!
+  _ts: Long!
+}
 
-  type Query {
-    rooms: [Room]
-    storages: [Storage]
-    products: [Product]
-  }
+input ProductInput {
+  id: ID!
+  name: String!
+  storageId: ID!
+  category: String!
+}
 
-  type Mutation {
-    addRoom(name: String!, color: String!, id: ID! ): Room
+type ProductPage {
+  data: [Product]!
+  after: String
+  before: String
+}
+
+type Query {
+  findProductByID(id: ID!): Product
+  findRoomByID(id: ID!): Room
+  products(
+    _size: Int
+    _cursor: String
+  ): ProductPage!
+  rooms(
+    _size: Int
+    _cursor: String
+  ): RoomPage!
+  findStorageByID(id: ID!): Storage
+  storages(
+    _size: Int
+    _cursor: String
+  ): StoragePage!
+}
+
+ type Mutation {
+    addRoom(data: RoomInput!): Room
     removeRoom(id: ID!): Room
-    addStorage(name: String!, id: ID!, roomId: ID!): Storage
+    addStorage(data: StorageInput!): Storage!
     removeStorage(id: ID!): Storage
-    addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product
+    addProduct(data: ProductInput!): Product
     removeProduct(id: ID!): Product
   }
 `;
@@ -51,12 +106,12 @@ const resolvers = {
   Query: {
     rooms: async () => {
       try {
+        console.log('ERREUR 1')
         const results = await client.query(
-          q.Map(q.Paginate(q.Match(q.Index("rooms"))),
-            q.Lambda("X", q.Get(q.Var("X")))
-          ));
-        return results.data.map(([ref, name, color]) => ({
-          _id: ref._id,
+          q.Ref(q.Collection("rooms"))
+        );
+        console.log('ERREUR 2');
+        return results.data.map(([name, color]) => ({
           name,
           color
         }));
@@ -71,10 +126,9 @@ const resolvers = {
           q.Paginate(q.Match(q.Index("storages")))
         );
         console.log('RESULTS storages', results)
-        return results.data.map(([ref, name, roomId]) => ({
-          id: ref.id,
-          name,
-          roomId
+        return results.data.map(([data]) => ({
+          id: data.ref.id,
+          name: data.name
         }));
       } catch (error) {
         console.log('errrrrreur storages', error)
