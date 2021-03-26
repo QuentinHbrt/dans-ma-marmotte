@@ -75,10 +75,7 @@ type Query {
     _size: Int
     _cursor: String
   ): ProductPage!
-  rooms(
-    _size: Int
-    _cursor: String
-  ): RoomPage!
+  rooms: [Room]
   findStorageByID(id: ID!): Storage
   storages(
     _size: Int
@@ -108,7 +105,7 @@ const resolvers = {
       try {
         console.log('1.1')
         const results = await client.query(
-          q.Ref(q.Collection(q.Index("rooms"))
+          (q.Collection(q.Index("rooms"))
           ));
         console.log('2.1');
         return results.data.map(([name, color]) => ({
