@@ -40,14 +40,9 @@ export const RoomsPage: FC = () => {
 
     return (
         <Card>
-
-            {console.log('1')}
             {roomsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
-            {console.log('2')}
             {roomsQuery.data && <RoomsList rooms={roomsQuery.data.rooms} onDeleteRoom={removeRoomGQL} />}
-            {console.log('3')}
             <RoomForm onSubmitRoom={addRoomGQL} />
-            {console.log('4')}
         </Card>
     )
 }

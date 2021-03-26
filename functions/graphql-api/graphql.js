@@ -6,89 +6,37 @@ let client = new faunadb.Client({ secret: process.env.FAUNA });
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
-type Room {
-  name: String!
-  _id: ID!
-  color: String!
-  id: ID!
-  _ts: Long!
-}
-
-input RoomInput {
-  id: ID!
-  name: String!
-  color: String!
-}
-
-type RoomPage {
-  data: [Room]!
-  after: String
-  before: String
-}
+  type Room {
+    id: ID!
+    name: String!
+    color: String!
+  }
   
   type Storage {
-  roomId: ID!
-  name: String!
-  _id: ID!
-  id: ID!
-  _ts: Long!
-}
-
-input StorageInput {
-  id: ID!
-  name: String!
-  roomId: ID!
-}
-
-type StoragePage {
-  data: [Storage]!
-  after: String
-  before: String
-}
+    id: ID!
+    name: String!
+    roomId: ID!
+  }
 
   type Product {
-  name: String!
-  storageId: ID!
-  _id: ID!
-  id: ID!
-  category: String!
-  _ts: Long!
-}
+    id: ID!
+    name: String!
+    storageId: ID!
+    category: String!
+  }
 
-input ProductInput {
-  id: ID!
-  name: String!
-  storageId: ID!
-  category: String!
-}
+  type Query {
+    rooms: [Room]
+    storages: [Storage]
+    products: [Product]
+  }
 
-type ProductPage {
-  data: [Product]!
-  after: String
-  before: String
-}
-
-type Query {
-  findProductByID(id: ID!): Product
-  findRoomByID(id: ID!): Room
-  products(
-    _size: Int
-    _cursor: String
-  ): ProductPage!
-  rooms: [Room]
-  findStorageByID(id: ID!): Storage
-  storages(
-    _size: Int
-    _cursor: String
-  ): StoragePage!
-}
-
- type Mutation {
-    addRoom(data: RoomInput!): Room
+  type Mutation {
+    addRoom(name: String!, color: String!, id: ID! ): Room
     removeRoom(id: ID!): Room
-    addStorage(data: StorageInput!): Storage!
+    addStorage(name: String!, id: ID!, roomId: ID!): Storage
     removeStorage(id: ID!): Storage
-    addProduct(data: ProductInput!): Product
+    addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product
     removeProduct(id: ID!): Product
   }
 `;
@@ -101,73 +49,20 @@ let products = []
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    rooms: async () => {
-      try {
-        console.log('1.1')
-        const results = await client.query(
-          (q.Collection(q.Index("rooms"))
-          ));
-        console.log('2.1');
-        return results.data.map(([name, color]) => ({
-          name,
-          color
-        }));
-      } catch (error) {
-        console.log('ERROR', error)
-        return Promise.reject(error)
-      }
-    },
-    storages: async () => {
-      try {
-        const results = await client.query(
-          q.Paginate(q.Match(q.Index("storages")))
-        );
-        console.log('RESULTS storages', results)
-        return results.data.map(([data]) => ({
-          id: data.ref.id,
-          name: data.name
-        }));
-      } catch (error) {
-        console.log('errrrrreur storages', error)
-        return Promise.reject(error)
-
-      }
-    },
-    products: async () => {
-      try {
-        const results = await client.query(
-          q.Paginate(q.Match(q.Index("products")))
-        );
-        console.log('RESULTS Products', results)
-        return results.data.map(([ref, name, storageId, category]) => ({
-          id: ref.id,
-          name,
-          storageId,
-          category
-        }));
-      } catch (error) {
-        console.log('errrrrreur storages', error)
-        return Promise.reject(error)
-      }
-    }
+    rooms: () => rooms,
+    storages: () => storages,
+    products: () => products,
   },
-
   Mutation: {
-    addRoom: async (_, { name, color }) => {
-      const results = await client.query(
-        q.Create(q.Collection("rooms"), {
-          data: {
-            name,
-            color
-          }
-        })
-      );
-      return {
-        ...results.data,
-        id: results.ref.id
+    addRoom: (_, { name, id, color }) => {
+      const newRoom = {
+        name,
+        color,
+        id: `room-${id}`
       }
+      rooms = [...rooms, newRoom]
+      return newRoom
     },
-
     removeRoom: (_, { id }) => {
       const roomToRemove = rooms.find(room => room.id === id)
       if (!roomToRemove) {
