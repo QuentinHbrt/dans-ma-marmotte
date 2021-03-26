@@ -15,7 +15,6 @@ function App() {
         <Heading>{"Dans ma Marmotte"}</Heading>
         <Route path={"/ProductsPage"} component={ProductsPage} />
         <Route path={"/RoomsPage"} component={RoomsPage} />
-        {console.log('5')}
         <Route path={"/StoragesPage"} component={StoragesPage} />
       </Container>
     </Router>
