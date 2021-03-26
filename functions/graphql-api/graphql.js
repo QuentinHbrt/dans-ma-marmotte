@@ -108,8 +108,8 @@ const resolvers = {
       try {
         console.log('1.1')
         const results = await client.query(
-          q.Ref(q.Collection("rooms"))
-        );
+          q.Ref(q.Collection(q.Index("rooms"))
+          ));
         console.log('2.1');
         return results.data.map(([name, color]) => ({
           name,
