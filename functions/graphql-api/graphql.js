@@ -106,17 +106,17 @@ const resolvers = {
   Query: {
     rooms: async () => {
       try {
-        console.log('ERREUR 1')
+        console.log('1.1')
         const results = await client.query(
           q.Ref(q.Collection("rooms"))
         );
-        console.log('ERREUR 2');
+        console.log('2.1');
         return results.data.map(([name, color]) => ({
           name,
           color
         }));
       } catch (error) {
-        console.log('errrrrreur rooms', error)
+        console.log('ERROR', error)
         return Promise.reject(error)
       }
     },

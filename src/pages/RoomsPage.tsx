@@ -42,10 +42,11 @@ export const RoomsPage: FC = () => {
         <Card>
 
             {roomsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
-            {console.log('ERREUR 3')}
+            {console.log('1')}
+            {console.log('2')}
             {roomsQuery.data && <RoomsList rooms={roomsQuery.data.rooms} onDeleteRoom={removeRoomGQL} />}
             <RoomForm onSubmitRoom={addRoomGQL} />
-            {console.log('ERREUR 4')}
+            {console.log('3')}
         </Card>
     )
 }
