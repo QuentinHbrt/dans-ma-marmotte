@@ -1,116 +1,33 @@
-directive @embedded on OBJECT
-directive @collection(name: String!) on OBJECT
-directive @index(name: String!) on FIELD_DEFINITION
-directive @resolver(
-  name: String
-  paginated: Boolean! = false
-) on FIELD_DEFINITION
-directive @relation(name: String) on FIELD_DEFINITION
-directive @unique(index: String) on FIELD_DEFINITION
-scalar Date
-
-scalar Long
-
-type Mutation {
-  createRoom(data: RoomInput!): Room!
-  updateStorage(
+  type Room {
     id: ID!
-    data: StorageInput!
-  ): Storage
-  deleteStorage(id: ID!): Storage
-  createStorage(data: StorageInput!): Storage!
-  updateRoom(
+    name: String!
+    color: String!
+  }
+  
+  type Storage {
     id: ID!
-    data: RoomInput!
-  ): Room
-  createProduct(data: ProductInput!): Product!
-  updateProduct(
+    name: String!
+    roomId: ID!
+  }
+
+  type Product {
     id: ID!
-    data: ProductInput!
-  ): Product
-  deleteProduct(id: ID!): Product
-  deleteRoom(id: ID!): Room
-}
+    name: String!
+    storageId: ID!
+    category: String!
+  }
 
-type Product {
-  name: String!
-  storageId: ID!
-  _id: ID!
-  id: ID!
-  category: String!
-  _ts: Long!
-}
+  type Query {
+    rooms: [Room]
+    storages: [Storage]
+    products: [Product]
+  }
 
-input ProductInput {
-  id: ID!
-  name: String!
-  storageId: ID!
-  category: String!
-}
-
-type ProductPage {
-  data: [Product]!
-  after: String
-  before: String
-}
-
-type Query {
-  findProductByID(id: ID!): Product
-  findRoomByID(id: ID!): Room
-  products(
-    _size: Int
-    _cursor: String
-  ): ProductPage!
-  rooms(
-    _size: Int
-    _cursor: String
-  ): RoomPage!
-  rooms: [Room]
-  findStorageByID(id: ID!): Storage
-  storages(
-    _size: Int
-    _cursor: String
-  ): StoragePage!
-}
-
-type Room {
-  name: String!
-  _id: ID!
-  color: String!
-  id: ID!
-  _ts: Long!
-}
-
-input RoomInput {
-  id: ID!
-  name: String!
-  color: String!
-}
-
-type RoomPage {
-  data: [Room]!
-  after: String
-  before: String
-}
-
-type Storage {
-  roomId: ID!
-  name: String!
-  _id: ID!
-  id: ID!
-  _ts: Long!
-}
-
-input StorageInput {
-  id: ID!
-  name: String!
-  roomId: ID!
-}
-
-type StoragePage {
-  data: [Storage]!
-  after: String
-  before: String
-}
-
-scalar Time
+  type Mutation {
+    addRoom(name: String!, color: String!, id: ID! ): Room
+    removeRoom(id: ID!): Room
+    addStorage(name: String!, id: ID!, roomId: ID!): Storage
+    removeStorage(id: ID!): Storage
+    addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product
+    removeProduct(id: ID!): Product
+  }

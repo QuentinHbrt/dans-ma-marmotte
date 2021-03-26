@@ -49,7 +49,16 @@ let products = []
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    rooms: () => rooms,
+    rooms: async () => {
+      const results = await client.query(
+        q.Paginate(q.Match(q.Index("rooms")))
+      );
+      return results.data.map(([data]) => ({
+        id: data.ref.id,
+        name: data.name,
+        color: data.color
+      }))
+    },
     storages: () => storages,
     products: () => products,
   },
