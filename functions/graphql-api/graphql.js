@@ -59,8 +59,27 @@ const resolvers = {
         color: color
       }))
     },
-    storages: () => storages,
-    products: () => products,
+    storages: async () => {
+      const results = await client.query(
+        q.Paginate(q.Match(q.Index("storages")))
+      );
+      return results.data.map(([ref, name, roomId]) => ({
+        id: ref.id,
+        name: name,
+        roomId: roomId
+      }))
+    },
+    products: async () => {
+      const results = await client.query(
+        q.Paginate(q.Match(q.Index("products")))
+      );
+      return results.data.map(([ref, name, storageId, category]) => ({
+        id: ref.id,
+        name: name,
+        storageId: storageId,
+        category: category
+      }))
+    },
   },
   Mutation: {
     addRoom: (_, { name, id, color }) => {
