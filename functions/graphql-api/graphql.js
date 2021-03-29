@@ -39,6 +39,7 @@ const typeDefs = gql`
     addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product
     removeProduct(id: ID!): Product
   }
+  
 `;
 
 
