@@ -24,10 +24,11 @@
   }
 
   type Mutation {
-    addRoom(name: String!, color: String!, id: ID! ): Room
-    removeRoom(id: ID!): Room
-    addStorage(name: String!, id: ID!, roomId: ID!): Storage
-    removeStorage(id: ID!): Storage
-    addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product
-    removeProduct(id: ID!): Product
+    addRoom(name: String!, color: String!, id: ID! ): Room @resolver
+    removeRoom(id: ID!): Room @resolver
+    addStorage(name: String!, id: ID!, roomId: ID!): Storage @resolver
+    removeStorage(id: ID!): Storage @resolver
+    addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product @resolver
+    removeProduct(id: ID!): Product @resolver
   }
+

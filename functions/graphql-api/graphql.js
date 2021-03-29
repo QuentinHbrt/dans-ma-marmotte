@@ -32,14 +32,13 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createRoom(data: RoomInput!): Room!
+    addRoom(name: String!, color: String!, id: ID! ): Room
     removeRoom(id: ID!): Room
     addStorage(name: String!, id: ID!, roomId: ID!): Storage
     removeStorage(id: ID!): Storage
     addProduct(name: String!, storageId: ID!, id: ID!, category: String!): Product
     removeProduct(id: ID!): Product
   }
-  
 `;
 
 
@@ -51,51 +50,74 @@ let products = []
 const resolvers = {
   Query: {
     rooms: async () => {
-      const results = await client.query(
-        q.Paginate(q.Match(q.Index("rooms")))
-      );
-      return results.data.map(([ref, name, color]) => ({
-        id: ref.id,
-        name,
-        color
-      }))
+      try {
+        const results = await client.query(
+          q.Paginate(q.Match(q.Index("rooms")))
+        );
+        console.log('results', results)
+        return results.data.map(([ref, name, color]) => ({
+          id: ref.id,
+          name,
+          color
+        }))
+      } catch (error) {
+        console.log('erreur rooms', error)
+        return Promise.reject(error)
+      }
     },
     storages: async () => {
-      const results = await client.query(
-        q.Paginate(q.Match(q.Index("storages")))
-      );
-      return results.data.map(([ref, name, roomId]) => ({
-        id: ref.id,
-        name: name,
-        roomId: roomId
-      }))
+      try {
+        const results = await client.query(
+          q.Paginate(q.Match(q.Index("storages")))
+        );
+        return results.data.map(([ref, name, roomId]) => ({
+          id: ref.id,
+          name: name,
+          roomId: roomId
+        }))
+      } catch (error) {
+        console.log('erreur storages', error)
+        return Promise.reject(error)
+      }
     },
     products: async () => {
-      const results = await client.query(
-        q.Paginate(q.Match(q.Index("products")))
-      );
-      return results.data.map(([ref, name, storageId, category]) => ({
-        id: ref.id,
-        name: name,
-        storageId: storageId,
-        category: category
-      }))
+      try {
+        const results = await client.query(
+          q.Paginate(q.Match(q.Index("products")))
+        );
+        return results.data.map(([ref, name, storageId, category]) => ({
+          id: ref.id,
+          name: name,
+          storageId: storageId,
+          category: category
+        }))
+      } catch (error) {
+        console.log('erreur products', error)
+        return Promise.reject(error)
+      }
     },
   },
   Mutation: {
     addRoom: async (_, { name, color }) => {
-      const results = await client.query(
-        q.Create(q.Collection("rooms"), {
-          data: {
-            name,
-            color
-          }
-        })
-      );
-      return {
-        ...results.data,
-        id: results.ref.id
-      };
+      try {
+        const results = await client.query(
+          q.Create(q.Collection("Room"), {
+            data: {
+              name,
+              color
+            }
+          })
+        );
+        console.log('RESULTATS', results)
+        return {
+          ...results.data,
+          id: results.ref.id
+        };
+      }
+      catch (error) {
+        console.log(error)
+        return Promise.reject(error)
+      }
     },
     removeRoom: (_, { id }) => {
       const roomToRemove = rooms.find(room => room.id === id)
