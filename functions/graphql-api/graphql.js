@@ -32,7 +32,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addRoom(name: String!, color: String!, id: ID! ): Room
+    createRoom(data: RoomInput!): Room!
     removeRoom(id: ID!): Room
     addStorage(name: String!, id: ID!, roomId: ID!): Storage
     removeStorage(id: ID!): Storage
@@ -55,8 +55,8 @@ const resolvers = {
       );
       return results.data.map(([ref, name, color]) => ({
         id: ref.id,
-        name: name,
-        color: color
+        name,
+        color
       }))
     },
     storages: async () => {
@@ -82,14 +82,19 @@ const resolvers = {
     },
   },
   Mutation: {
-    addRoom: (_, { name, id, color }) => {
-      const newRoom = {
-        name,
-        color,
-        id: `room-${id}`
-      }
-      rooms = [...rooms, newRoom]
-      return newRoom
+    addRoom: async (_, { name, color }) => {
+      const results = await client.query(
+        q.Create(q.Collection("rooms"), {
+          data: {
+            name,
+            color
+          }
+        })
+      );
+      return {
+        ...results.data,
+        id: results.ref.id
+      };
     },
     removeRoom: (_, { id }) => {
       const roomToRemove = rooms.find(room => room.id === id)
