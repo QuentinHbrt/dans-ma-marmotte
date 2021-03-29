@@ -53,10 +53,10 @@ const resolvers = {
       const results = await client.query(
         q.Paginate(q.Match(q.Index("rooms")))
       );
-      return results.data.map(([data]) => ({
-        id: data.ref.id,
-        name: data.name,
-        color: data.color
+      return results.data.map(([ref, name, color]) => ({
+        id: ref.id,
+        name: name,
+        color: color
       }))
     },
     storages: () => storages,
