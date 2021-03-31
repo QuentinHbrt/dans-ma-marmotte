@@ -57,6 +57,31 @@ async function queryRooms() {
   }))
 }
 
+async function queryStorages() {
+  const results = await client.query(
+    q.Paginate(q.Match(q.Index("storages")))
+  );
+  console.log('query storages', storages)
+  return results.data.map(([ref, name, roomId]) => ({
+    id: ref.id,
+    name,
+    roomId
+  }))
+}
+
+async function queryProducts() {
+  const results = await client.query(
+    q.Paginate(q.Match(q.Index("products")))
+  );
+  console.log('query products', products)
+  return results.data.map(([ref, name, storageId, category]) => ({
+    id: ref.id,
+    name,
+    storageId,
+    category
+  }))
+}
+
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
@@ -71,14 +96,8 @@ const resolvers = {
     },
     storages: async () => {
       try {
-        const results = await client.query(
-          q.Paginate(q.Match(q.Index("storages")))
-        );
-        return results.data.map(([ref, name, roomId]) => ({
-          id: ref.id,
-          name: name,
-          roomId: roomId
-        }))
+        const storages = await queryStorages()
+        return storages
       } catch (error) {
         console.log('erreur storages', error)
         return Promise.reject(error)
@@ -86,15 +105,8 @@ const resolvers = {
     },
     products: async () => {
       try {
-        const results = await client.query(
-          q.Paginate(q.Match(q.Index("products")))
-        );
-        return results.data.map(([ref, name, storageId, category]) => ({
-          id: ref.id,
-          name: name,
-          storageId: storageId,
-          category: category
-        }))
+        const products = await queryProducts()
+        return products
       } catch (error) {
         console.log('erreur products', error)
         return Promise.reject(error)
@@ -112,7 +124,6 @@ const resolvers = {
             }
           })
         );
-        console.log('RESULTATS', results)
         return {
           ...results.data,
           id: results.ref.id
@@ -123,6 +134,7 @@ const resolvers = {
         return Promise.reject(error)
       }
     },
+
     removeRoom: (_, { id }) => {
       const roomToRemove = rooms.find(room => room.id === id)
       if (!roomToRemove) {
@@ -137,22 +149,36 @@ const resolvers = {
       if (count > 0) {
         throw new UserInputError(`La pièce ${roomToRemove.name} est utilisée par ${count} rangement(s)`)
       }
-
+      // Au lieu de remplacer le tableau, supprimer la room dans la collection "Room" de faunadb
       rooms = rooms.filter(room => room.id !== id)
       return roomToRemove
     },
-    addStorage: (_, { name, id, roomId }) => {
-      const roomToAssociate = rooms.find(room => room.id === roomId)
-      if (!roomToAssociate) {
-        throw new UserInputError(`la pièce demandée pour ce rangement n'existe pas`)
+
+    addStorage: async (_, { name, roomId }) => {
+      try {
+        const rooms = await queryRooms()
+        const roomToAssociate = rooms.find(room => room.id === roomId)
+        if (!roomToAssociate) {
+          throw new UserInputError(`la pièce demandée pour ce rangement n'existe pas`)
+        }
+        const results = await client.query(
+          q.Create(q.Collection("Storage"), {
+            data: {
+              name,
+              roomId
+            }
+          })
+        );
+        console.log('results storage', results)
+        return {
+          ...results.data,
+          id: results.ref.id
+        }
       }
-      const newStorage = {
-        name,
-        id: `storage-${id}`,
-        roomId
+      catch (error) {
+        console.log(error)
+        return Promise.reject(error)
       }
-      storages = [...storages, newStorage]
-      return newStorage
     },
     removeStorage: (_, { id }) => {
       const storageToRemove = storages.find(storage => storage.id === id)
@@ -171,19 +197,31 @@ const resolvers = {
       storages = storages.filter(storage => storage.id !== id)
       return storageToRemove
     },
-    addProduct: (_, { name, id, storageId, category }) => {
-      const storageToAssociate = storages.find(storage => storage.id === storageId)
-      if (!storageToAssociate) {
-        throw new UserInputError(`le rangement demandé pour ce produit n'existe pas`)
+    addProduct: async (_, { name, category, storageId }) => {
+      try {
+        const storages = await queryStorages()
+        const storageToAssociate = storages.find(storage => storage.id === storageId)
+        if (!storageToAssociate) {
+          throw new UserInputError(`le rangement demandé pour ce produit n'existe pas`)
+        }
+        const results = await client.query(
+          q.Create(q.Collection("Product"), {
+            data: {
+              name,
+              category,
+              storageId
+            }
+          })
+        );
+        return {
+          ...results.data,
+          id: results.ref.id
+        }
       }
-      const newProduct = {
-        name,
-        id: `product-${id}`,
-        storageId,
-        category
+      catch (error) {
+        console.log(error)
+        return Promise.reject(error)
       }
-      products = [...products, newProduct]
-      return newProduct
     },
     removeProduct: (_, { id }) => {
       const productToRemove = products.find(product => product.id === id)
