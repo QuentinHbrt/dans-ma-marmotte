@@ -46,22 +46,26 @@ let rooms = []
 let storages = []
 let products = []
 
+async function queryRooms() {
+  const results = await client.query(
+    q.Paginate(q.Match(q.Index("rooms")))
+  );
+  return results.data.map(([ref, name, color]) => ({
+    id: ref.id,
+    name,
+    color
+  }))
+}
+
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
     rooms: async () => {
       try {
-        const results = await client.query(
-          q.Paginate(q.Match(q.Index("rooms")))
-        );
-        console.log('results', results)
-        return results.data.map(([ref, name, color]) => ({
-          id: ref.id,
-          name,
-          color
-        }))
+        const rooms = await queryRooms()
+        return rooms
       } catch (error) {
-        console.log('erreur rooms', error)
+        console.log('error query rooms', error)
         return Promise.reject(error)
       }
     },
