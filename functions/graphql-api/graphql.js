@@ -135,23 +135,35 @@ const resolvers = {
       }
     },
 
-    removeRoom: (_, { id }) => {
-      const roomToRemove = rooms.find(room => room.id === id)
-      if (!roomToRemove) {
-        throw new UserInputError(`La piéce n'existe pas`)
-      }
-      let count = 0
-      storages.forEach((storage) => {
-        if (storage.roomId === id) {
-          count = count + 1
+    removeRoom: async (_, { id }) => {
+      try {
+        const storages = await queryStorages()
+        const rooms = await queryRooms()
+        const roomToRemove = rooms.find(room => room.id === id)
+        if (!roomToRemove) {
+          throw new UserInputError(`La piéce n'existe pas`)
         }
-      })
-      if (count > 0) {
-        throw new UserInputError(`La pièce ${roomToRemove.name} est utilisée par ${count} rangement(s)`)
+        let count = 0
+        storages.forEach((storage) => {
+          if (storage.roomId === id) {
+            count = count + 1
+          }
+        })
+        if (count > 0) {
+          throw new UserInputError(`La pièce ${roomToRemove.name} est utilisée par ${count} rangement(s)`)
+        }
+        // Au lieu de remplacer le tableau, supprimer la room dans la collection "Room" de faunadb
+        client.query(
+          q.Delete(q.Ref(q.Collection('Room'), id))
+        )
+        return {
+          ...roomToRemove
+        }
       }
-      // Au lieu de remplacer le tableau, supprimer la room dans la collection "Room" de faunadb
-      rooms = rooms.filter(room => room.id !== id)
-      return roomToRemove
+      catch (error) {
+        console.log(error)
+        return Promise.reject(error)
+      }
     },
 
     addStorage: async (_, { name, roomId }) => {
