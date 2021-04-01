@@ -16,7 +16,6 @@ export const ProductItem: FC<ProductItemProps> = (props) => {
     return (
         <li>
             {props.product.name}
-            {props.product.category}
             <Button onClick={handleDelete}>{'DELETE'}</Button>
         </li>
     )
