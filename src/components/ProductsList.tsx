@@ -12,7 +12,7 @@ type ProductsListProps = {
 export const ProductsList: FC<ProductsListProps> = (props) => {
     return (
         <ul>
-            {props.products.map((product) => <ProductItem key={product.id} product={product} onDeleteProductProperty={props.onDeleteProduct} />)}
+            {props.products.map((product) => <ProductItem key={product.id} productProperty={product} onDeleteProductProperty={props.onDeleteProduct} />)}
         </ul>
     )
 }

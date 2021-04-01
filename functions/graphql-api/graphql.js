@@ -42,9 +42,6 @@ const typeDefs = gql`
 `;
 
 
-let rooms = []
-let storages = []
-let products = []
 
 async function queryRooms() {
   const results = await client.query(
@@ -61,7 +58,6 @@ async function queryStorages() {
   const results = await client.query(
     q.Paginate(q.Match(q.Index("storages")))
   );
-  console.log('query storages', storages)
   return results.data.map(([ref, name, roomId]) => ({
     id: ref.id,
     name,
@@ -73,7 +69,6 @@ async function queryProducts() {
   const results = await client.query(
     q.Paginate(q.Match(q.Index("products")))
   );
-  console.log('query products', products)
   return results.data.map(([ref, name, storageId, category]) => ({
     id: ref.id,
     name,
@@ -192,7 +187,9 @@ const resolvers = {
         return Promise.reject(error)
       }
     },
-    removeStorage: (_, { id }) => {
+    removeStorage: async (_, { id }) => {
+      const rooms = await queryRooms()
+      const storages = await queryStorages()
       const storageToRemove = storages.find(storage => storage.id === id)
       if (!storageToRemove) {
         throw new UserInputError(`Le rangement n'existe pas`)
@@ -206,8 +203,12 @@ const resolvers = {
       if (count > 0) {
         throw new UserInputError(`Le rangement ${storageToRemove.name} est utilisé par ${count} pièce(s)`)
       }
-      storages = storages.filter(storage => storage.id !== id)
-      return storageToRemove
+      client.query(
+        q.Delete(q.Ref(q.Collection('Storage'), id))
+      )
+      return {
+        ...storageToRemove
+      }
     },
     addProduct: async (_, { name, category, storageId }) => {
       try {
@@ -235,13 +236,24 @@ const resolvers = {
         return Promise.reject(error)
       }
     },
-    removeProduct: (_, { id }) => {
-      const productToRemove = products.find(product => product.id === id)
-      if (!productToRemove) {
-        throw new UserInputError(`Le produit n'existe pas`)
+    removeProduct: async (_, { id }) => {
+      try {
+        const products = await queryProducts()
+        const productToRemove = products.find(product => product.id === id)
+        if (!productToRemove) {
+          throw new UserInputError(`Le produit n'existe pas`)
+        }
+        client.query(
+          q.Delete(q.Ref(q.Collection('Product'), id))
+        )
+        return {
+          ...productToRemove
+        }
       }
-      products = products.filter(product => product.id !== id)
-      return productToRemove
+      catch (error) {
+        console.log(error)
+        return Promise.reject(error)
+      }
     }
   }
 };
