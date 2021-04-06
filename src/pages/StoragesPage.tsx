@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Card, Text } from '@theme-ui/components';
+import { Box, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
 import { Mutations, Queries } from '../api/graphqlClient';
 import { Room, Storage } from '../api/types';
@@ -43,10 +43,10 @@ export const StoragesPage: FC = () => {
     }
 
     return (
-        <Card>
+        <Box>
             {storagesQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
             {storagesQuery.data && roomsQuery.data && <StoragesList storages={storagesQuery.data.storages} onDeleteStorage={removeStorageGQL} rooms={roomsQuery.data.rooms} />}
             {roomsQuery.data && <StorageForm onSubmitStorage={addStorageGQL} roomsProperty={roomsQuery.data.rooms} />}
-        </Card>
+        </Box>
     )
 }
