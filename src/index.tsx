@@ -6,6 +6,7 @@ import { GraphqlClient } from "./api/graphqlClient";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { theme } from "./theme";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
   <React.StrictMode>

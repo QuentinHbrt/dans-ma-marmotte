@@ -5,6 +5,8 @@ import { Navbar } from './components/Navbar';
 import { ProductsPage } from './pages/ProductsPage';
 import { RoomsPage } from './pages/RoomsPage';
 import { StoragesPage } from './pages/StoragesPage';
+import { } from 'reactstrap';
+
 
 function App() {
 
