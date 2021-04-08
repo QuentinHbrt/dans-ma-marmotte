@@ -1,15 +1,27 @@
-import { Button } from '@theme-ui/components'
-import React, { FC } from 'react'
-import { Link } from 'react-router-dom'
+import React, { FC, useState } from 'react';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
-type NavbarProperties = {}
+export const NavBar: FC = (props) => {
+    const [collapsed, setCollapsed] = useState(true);
 
-export const Navbar: FC<NavbarProperties> = () => {
+    const toggleNavbar = () => setCollapsed(!collapsed);
+
     return (
-        <nav>
-            <Link to={"/StoragesPage"}><Button>{"StoragesPage"}</Button></Link>
-            <Link to={"/ProductsPage"}><Button>{"ProductsPage"}</Button></Link>
-            <Link to={"/RoomsPage"}><Button>{"Roomspage"}</Button></Link>
-        </nav>
-    )
+        <div>
+            <Navbar color="light" light>
+                <NavbarBrand href="/" className="mr-auto">{"Dans ma marmotte"}</NavbarBrand>
+                <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+                <Collapse isOpen={!collapsed} navbar>
+                    <Nav navbar>
+                        <NavItem>
+                            <NavLink href="/components/">Components</NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
+                        </NavItem>
+                    </Nav>
+                </Collapse>
+            </Navbar>
+        </div>
+    );
 }

@@ -2,11 +2,12 @@ import React from 'react';
 import './App.scss'
 import { Container, Heading } from '@theme-ui/components';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Navbar } from './components/Navbar';
+import { NavBar } from './components/Navbar';
+import { } from 'reactstrap';
+import { HomeConnected } from './pages/HomeConnected';
 import { ProductsPage } from './pages/ProductsPage';
 import { RoomsPage } from './pages/RoomsPage';
 import { StoragesPage } from './pages/StoragesPage';
-import { } from 'reactstrap';
 
 
 function App() {
@@ -14,8 +15,8 @@ function App() {
   return (
     <Router>
       <Container>
-        <Navbar />
-        <Heading>{"Dans ma Marmotte"}</Heading>
+        <NavBar />
+        <Route path={"/HomeConnected"} component={HomeConnected} />
         <Route path={"/ProductsPage"} component={ProductsPage} />
         <Route path={"/RoomsPage"} component={RoomsPage} />
         <Route path={"/StoragesPage"} component={StoragesPage} />
