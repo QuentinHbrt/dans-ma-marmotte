@@ -16,7 +16,7 @@ function App() {
     <Router>
       <Container>
         <NavBar />
-        <Route path={"/HomeConnected"} component={HomeConnected} />
+        <Route path={"/"} component={HomeConnected} />
         <Route path={"/ProductsPage"} component={ProductsPage} />
         <Route path={"/RoomsPage"} component={RoomsPage} />
         <Route path={"/StoragesPage"} component={StoragesPage} />
