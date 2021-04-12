@@ -2,11 +2,15 @@ import React, { FC } from 'react';
 
 export const HomeConnected: FC = () => {
     return (
-        <main className='container-fluid'>
-            <section className="text-center">
-                <img src="images/IMG_4058.jpg" alt="amigos" />
-            </section>
+        <main className="masthead d-flex">
+            <div className="container text-center my-auto">
+                <h1 className="mb-1">Stylish Portfolio</h1>
+                <h3 className="mb-5">
+                    <em>A Free Bootstrap Theme by Start Bootstrap</em>
+                </h3>
+                <a className="btn btn-primary btn-xl js-scroll-trigger" href="#about">Find Out More</a>
+            </div>
+            <div className="overlay"></div>
         </main>
-
     );
 }

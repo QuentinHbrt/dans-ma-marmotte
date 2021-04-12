@@ -7,8 +7,8 @@ export const NavBar: FC = (props) => {
     const toggleNavbar = () => setCollapsed(!collapsed);
 
     return (
-        <div>
-            <Navbar color="light" light>
+        <nav>
+            <Navbar className="navbar fixed-top navbar-dark scrolling-navbar">
                 <NavbarBrand href="/" className="mr-auto">{"Dans ma marmotte"}</NavbarBrand>
                 <NavbarToggler onClick={toggleNavbar} className="mr-2" />
                 <Collapse isOpen={!collapsed} navbar>
@@ -22,6 +22,6 @@ export const NavBar: FC = (props) => {
                     </Nav>
                 </Collapse>
             </Navbar>
-        </div>
+        </nav>
     );
 }
