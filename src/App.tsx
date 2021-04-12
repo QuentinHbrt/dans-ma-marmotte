@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.scss'
 import { Container, Heading } from '@theme-ui/components';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { NavBar } from './components/Navbar';
 import { } from 'reactstrap';
 import { HomeConnected } from './pages/HomeConnected';
@@ -16,10 +16,13 @@ function App() {
     <Router>
       <Container>
         <NavBar />
-        <Route path={"/"} component={HomeConnected} />
-        <Route path={"/ProductsPage"} component={ProductsPage} />
-        <Route path={"/RoomsPage"} component={RoomsPage} />
-        <Route path={"/StoragesPage"} component={StoragesPage} />
+        <Switch >
+          <Route exact path={"/"} component={HomeConnected} />
+          <Route path={"/ProductsPage"} component={ProductsPage} />
+          <Route path={"/RoomsPage"} component={RoomsPage} />
+          <Route path={"/StoragesPage"} component={StoragesPage} />
+          <Route render={() => <h1>{"PAGE NOT FOUND"}</h1>} />
+        </Switch>
       </Container>
     </Router>
 
