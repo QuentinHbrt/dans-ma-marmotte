@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.scss'
-import { Container, Heading } from '@theme-ui/components';
+import { Container } from '@theme-ui/components';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { NavBar } from './components/Navbar';
 import { } from 'reactstrap';
@@ -8,6 +8,7 @@ import { HomeConnected } from './pages/HomeConnected';
 import { ProductsPage } from './pages/ProductsPage';
 import { RoomsPage } from './pages/RoomsPage';
 import { StoragesPage } from './pages/StoragesPage';
+import { Footer } from './components/Footer';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path={"/StoragesPage"} component={StoragesPage} />
           <Route render={() => <h1>{"PAGE NOT FOUND"}</h1>} />
         </Switch>
+        <Footer />
       </Container>
     </Router>
 
