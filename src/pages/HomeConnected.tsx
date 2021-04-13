@@ -10,7 +10,6 @@ export const HomeConnected: FC = () => {
                 </h3>
                 <a className="btn btn-primary btn-xl js-scroll-trigger" href="#about">Find Out More</a>
             </div>
-            <div className="overlay"></div>
         </section>
     );
 }
