@@ -45,10 +45,19 @@ export const ProductsPage: FC = () => {
     }
 
     return (
-        <Box>
-            {productsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
-            {productsQuery.data && <ProductsList products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
-            {storagesQuery.data && roomsQuery.data && <ProductForm onSubmitProduct={addProductGQL} storagesProperty={storagesQuery.data.storages} roomsProperty={roomsQuery.data.rooms} />}
-        </Box>
+        <body>
+            <section className="masthead-products d-flex">
+                <div className="container text-center my-auto">
+                    <h1 className="mb-1">{"MES PRODUITS"}</h1>
+                </div>
+            </section>
+            <section>
+                <Box>
+                    {productsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
+                    {productsQuery.data && <ProductsList products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
+                    {storagesQuery.data && roomsQuery.data && <ProductForm onSubmitProduct={addProductGQL} storagesProperty={storagesQuery.data.storages} roomsProperty={roomsQuery.data.rooms} />}
+                </Box>
+            </section>
+        </body>
     )
 }
