@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Links } from './Links'
 
 export const NavBar: FC = (props) => {
     const [collapsed, setCollapsed] = useState(true);
@@ -13,12 +14,7 @@ export const NavBar: FC = (props) => {
                 <NavbarToggler onClick={toggleNavbar} className="mr-2" />
                 <Collapse isOpen={!collapsed} navbar>
                     <Nav navbar>
-                        <NavItem>
-                            <NavLink href="/components/">Components</NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
-                        </NavItem>
+                        <Links />
                     </Nav>
                 </Collapse>
             </Navbar>
