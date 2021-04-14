@@ -10,8 +10,10 @@ function getYear() {
 
 export const Footer: FC = () => {
     return (
-        <div className="text-center">
-            <p>DMM © {getYear()}</p>
-        </div>
+        <footer className="footer footer-transparent">
+            <div className="text-center">
+                <p>DMM © {getYear()}</p>
+            </div>
+        </footer>
     )
 }
