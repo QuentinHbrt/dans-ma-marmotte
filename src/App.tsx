@@ -9,6 +9,9 @@ import { ProductsPage } from './pages/ProductsPage';
 import { RoomsPage } from './pages/RoomsPage';
 import { StoragesPage } from './pages/StoragesPage';
 import { Footer } from './components/Footer';
+import { StorageForm } from './components/StorageForm';
+import { RoomForm } from './components/RoomForm';
+import { ProductForm } from './components/ProductForm';
 
 
 function App() {
@@ -22,6 +25,9 @@ function App() {
           <Route path={"/ProductsPage"} component={ProductsPage} />
           <Route path={"/RoomsPage"} component={RoomsPage} />
           <Route path={"/StoragesPage"} component={StoragesPage} />
+          <Route path={"/StorageForm"} component={StorageForm} />
+          <Route path={"/RoomForm"} component={RoomForm} />
+          <Route path={"/ProductForm"} component={ProductForm} />
           <Route render={() => <h1>{"PAGE NOT FOUND"}</h1>} />
         </Switch>
         <Footer />
