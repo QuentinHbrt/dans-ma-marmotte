@@ -8,9 +8,9 @@ export const Links: FC = () => {
         <nav>
             <ul>
                 <li><Link to={"/"}><Button>{"Home"}</Button></Link></li>
-                <li><Link to={"/StoragesPage"}><Button>{"StoragesPage"}</Button></Link></li>
-                <li><Link to={"/RoomsPage"}><Button>{"StoragesPage"}</Button></Link></li>
-                <li><Link to={"/ProductsPage"}><Button>{"ProductsPage"}</Button></Link></li>
+                <li><Link to={"/StoragesPage"}><Button>{"Storages"}</Button></Link></li>
+                <li><Link to={"/RoomsPage"}><Button>{"Rooms"}</Button></Link></li>
+                <li><Link to={"/ProductsPage"}><Button>{"Products"}</Button></Link></li>
             </ul>
         </nav>
     )
