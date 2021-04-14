@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav } from 'reactstrap';
 import { Links } from './Links'
 
 export const NavBar: FC = (props) => {
