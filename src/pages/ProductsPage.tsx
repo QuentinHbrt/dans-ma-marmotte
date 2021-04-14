@@ -1,10 +1,12 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Box, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
+import { Button } from 'reactstrap';
 import { Mutations, Queries } from '../api/graphqlClient';
 import { Product, Room, Storage } from '../api/types';
 import { ProductForm } from '../components/ProductForm';
 import { ProductsList } from '../components/ProductsList';
+import { Link } from 'react-router-dom';
 
 export const ProductsPage: FC = () => {
 
@@ -55,6 +57,7 @@ export const ProductsPage: FC = () => {
                 <Box>
                     {productsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
                     {productsQuery.data && <ProductsList products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
+                    <Link to="/ProductForm"><Button>{"Add Product"}</Button></Link>
                     {storagesQuery.data && roomsQuery.data && <ProductForm onSubmitProduct={addProductGQL} storagesProperty={storagesQuery.data.storages} roomsProperty={roomsQuery.data.rooms} />}
                 </Box>
             </section>
