@@ -9,10 +9,9 @@ import { ProductsPage } from './pages/ProductsPage';
 import { RoomsPage } from './pages/RoomsPage';
 import { StoragesPage } from './pages/StoragesPage';
 import { Footer } from './components/Footer';
-import { StorageForm } from './components/StorageForm';
-import { RoomForm } from './components/RoomForm';
-import { ProductForm } from './components/ProductForm';
-
+import { ProductFormPage } from './pages/ProductFormPage';
+import { StoragesFormPage } from './pages/StorageFormPage';
+import { RoomFormPage } from './pages/RoomFormPage';
 
 function App() {
 
@@ -23,11 +22,11 @@ function App() {
         <Switch >
           <Route exact path={"/"} component={HomeConnected} />
           <Route path={"/ProductsPage"} component={ProductsPage} />
+          <Route path={"/ProductFormPage"} component={ProductFormPage} />
           <Route path={"/RoomsPage"} component={RoomsPage} />
+          <Route path={"/RoomFormPage"} component={RoomFormPage} />
           <Route path={"/StoragesPage"} component={StoragesPage} />
-          <Route path={"/StorageForm"} component={StorageForm} />
-          <Route path={"/RoomForm"} component={RoomForm} />
-          <Route path={"/ProductForm"} component={ProductForm} />
+          <Route path={"/StorageFormPage"} component={StoragesFormPage} />
           <Route render={() => <h1>{"PAGE NOT FOUND"}</h1>} />
         </Switch>
         <Footer />
