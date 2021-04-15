@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Box, Text } from '@theme-ui/components';
+import { Button, Card, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { Mutations, Queries } from '../api/graphqlClient';
 import { Room } from '../api/types';
-import { RoomForm } from '../components/RoomForm';
 import { RoomsList } from '../components/RoomsList';
 
 
@@ -13,20 +13,8 @@ export const RoomsPage: FC = () => {
 
     console.log('GQL', roomsQuery.loading, roomsQuery.data, roomsQuery.called, JSON.stringify(roomsQuery.error))
 
-    const [addRoomMut] = useMutation<{ addRoom: Room }, Room>(Mutations.ADD_ROOM)
     const [removeRoomMut] = useMutation<{ removeRoom: Room }, { id: string }>(Mutations.REMOVE_ROOM)
 
-    function addRoomGQL(newRoom: Room) {
-        const mesVariables = {
-            name: newRoom.name,
-            color: newRoom.color,
-            id: newRoom.id
-        }
-        const mutOptions = {
-            variables: mesVariables
-        }
-        addRoomMut(mutOptions).then(() => roomsQuery.refetch()).catch((error) => alert(error))
-    }
 
     function removeRoomGQL(roomToRemove: Room) {
         const mesVariables = {
@@ -39,10 +27,19 @@ export const RoomsPage: FC = () => {
     }
 
     return (
-        <Box>
-            {roomsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
-            {roomsQuery.data && <RoomsList rooms={roomsQuery.data.rooms} onDeleteRoom={removeRoomGQL} />}
-            <RoomForm onSubmitRoom={addRoomGQL} />
-        </Box>
+        <body>
+            <section className="masthead-rooms d-flex">
+                <div className="container text-center my-auto">
+                    <h1 className="mb-1">{"MES PIECES"}</h1>
+                </div>
+            </section>
+            <section>
+                <Card>
+                    {roomsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
+                    <Link to="/RoomFormPage"><Button>{"Add Room"}</Button></Link>
+                    {roomsQuery.data && <RoomsList rooms={roomsQuery.data.rooms} onDeleteRoom={removeRoomGQL} />}
+                </Card>
+            </section>
+        </body>
     )
 }
