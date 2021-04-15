@@ -11,8 +11,10 @@ type ProductsListProps = {
 
 export const ProductsList: FC<ProductsListProps> = (props) => {
     return (
-        <ul>
-            {props.products.map((product) => <ProductItem key={product.id} productProperty={product} onDeleteProductProperty={props.onDeleteProduct} />)}
+        <ul className="d-flex justify-content-center">
+            <li>
+                {props.products.map((product) => <ProductItem key={product.id} productProperty={product} onDeleteProductProperty={props.onDeleteProduct} />)}
+            </li>
         </ul>
     )
 }
