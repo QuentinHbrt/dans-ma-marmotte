@@ -27,7 +27,7 @@ export const RoomsPage: FC = () => {
     }
 
     return (
-        <body>
+        <main>
             <section className="masthead-rooms d-flex">
                 <div className="container text-center my-auto">
                     <h1 className="mb-1">{"MES PIECES"}</h1>
@@ -40,6 +40,6 @@ export const RoomsPage: FC = () => {
                     {roomsQuery.data && <RoomsList rooms={roomsQuery.data.rooms} onDeleteRoom={removeRoomGQL} />}
                 </Card>
             </section>
-        </body>
+        </main>
     )
 }

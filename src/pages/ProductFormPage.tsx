@@ -44,7 +44,7 @@ export const ProductFormPage: FC = () => {
     }
 
     return (
-        <body>
+        <main>
             <section className="masthead-product-form d-flex">
                 <div className="container text-center my-auto">
                     <h1 className="mb-1">{"AJOUTER UN PRODUIT"}</h1>
@@ -57,6 +57,6 @@ export const ProductFormPage: FC = () => {
                     {storagesQuery.data && roomsQuery.data && <ProductForm onSubmitProduct={addProductGQL} storagesProperty={storagesQuery.data.storages} roomsProperty={roomsQuery.data.rooms} />}
                 </Card>
             </section>
-        </body>
+        </main>
     )
 }

@@ -30,7 +30,7 @@ export const StoragesPage: FC = () => {
     }
 
     return (
-        <body>
+        <main>
             <section className="masthead-storages d-flex">
                 <div className="container text-center my-auto">
                     <h1 className="mb-1">{"MES RANGEMENTS"}</h1>
@@ -43,7 +43,7 @@ export const StoragesPage: FC = () => {
                     {storagesQuery.data && roomsQuery.data && <StoragesList storages={storagesQuery.data.storages} onDeleteStorage={removeStorageGQL} rooms={roomsQuery.data.rooms} />}
                 </Card>
             </section>
-        </body>
+        </main>
 
     )
 }

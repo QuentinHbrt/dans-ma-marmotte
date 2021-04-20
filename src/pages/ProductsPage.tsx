@@ -29,7 +29,7 @@ export const ProductsPage: FC = () => {
     }
 
     return (
-        <body>
+        <main>
             <section className="masthead-products d-flex">
                 <div className="container text-center my-auto">
                     <h1 className="mb-1">{"MES PRODUITS"}</h1>
@@ -42,6 +42,6 @@ export const ProductsPage: FC = () => {
                     {productsQuery.data && <ProductsList products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
                 </Card>
             </section>
-        </body>
+        </main>
     )
 }

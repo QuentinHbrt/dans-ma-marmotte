@@ -42,7 +42,7 @@ export const StoragesFormPage: FC = () => {
     }
 
     return (
-        <body>
+        <main>
             <section className="masthead-storage-form d-flex">
                 <div className="container text-center my-auto">
                     <h1 className="mb-1">{"AJOUTER UN RANGEMENT"}</h1>
@@ -55,6 +55,6 @@ export const StoragesFormPage: FC = () => {
                     {roomsQuery.data && <StorageForm onSubmitStorage={addStorageGQL} roomsProperty={roomsQuery.data.rooms} />}
                 </Card>
             </section>
-        </body>
+        </main>
     )
 }
