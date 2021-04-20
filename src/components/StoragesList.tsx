@@ -11,9 +11,15 @@ type StoragesListProps = {
 }
 
 export const StoragesList: FC<StoragesListProps> = (props) => {
+
+    const arrayOfStorages = [...props.storages]
+    arrayOfStorages.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+    arrayOfStorages.forEach(x => (x))
+
+
     return (
         <ul>
-            {props.storages.map((storage) => {
+            {arrayOfStorages.map((storage) => {
                 const foundRoom = props.rooms.find(room => room.id === storage.roomId)
                 return (
                     <StorageItem
@@ -24,7 +30,6 @@ export const StoragesList: FC<StoragesListProps> = (props) => {
                     />
                 )
             }
-
             )}
         </ul>
     )

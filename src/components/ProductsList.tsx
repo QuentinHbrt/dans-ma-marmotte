@@ -10,10 +10,15 @@ type ProductsListProps = {
 }
 
 export const ProductsList: FC<ProductsListProps> = (props) => {
+
+    const arrayOfProducts = [...props.products]
+    arrayOfProducts.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+    arrayOfProducts.forEach(x => (x))
+
     return (
         <ul className="d-flex justify-content-center">
             <li>
-                {props.products.map((product) => <ProductItem key={product.id} productProperty={product} onDeleteProductProperty={props.onDeleteProduct} />)}
+                {arrayOfProducts.map((product) => <ProductItem key={product.id} productProperty={product} onDeleteProductProperty={props.onDeleteProduct} />)}
             </li>
         </ul>
     )
