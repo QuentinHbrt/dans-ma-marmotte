@@ -38,7 +38,7 @@ export const RoomFormPage: FC = () => {
     }
 
     return (
-        <body>
+        <main>
             <section className="masthead-room-form d-flex">
                 <div className="container text-center my-auto">
                     <h1 className="mb-1">{"AJOUTER UNE PIECE"}</h1>
@@ -51,6 +51,6 @@ export const RoomFormPage: FC = () => {
                     <RoomForm onSubmitRoom={addRoomGQL} />
                 </Card>
             </section>
-        </body>
+        </main>
     )
 }
