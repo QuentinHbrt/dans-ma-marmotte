@@ -53,7 +53,7 @@ export const ProductFormPage: FC = () => {
             <section>
                 <Card>
                     {productsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
-                    {productsQuery.data && <ProductsList products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
+                    {roomsQuery.data && storagesQuery.data && productsQuery.data && <ProductsList rooms={roomsQuery.data?.rooms} storages={storagesQuery.data.storages} products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
                     {storagesQuery.data && roomsQuery.data && <ProductForm onSubmitProduct={addProductGQL} storagesProperty={storagesQuery.data.storages} roomsProperty={roomsQuery.data.rooms} />}
                 </Card>
             </section>

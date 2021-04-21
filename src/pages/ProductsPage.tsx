@@ -3,13 +3,15 @@ import { Card, Text } from '@theme-ui/components';
 import React, { FC } from 'react';
 import { Button } from 'reactstrap';
 import { Mutations, Queries } from '../api/graphqlClient';
-import { Product } from '../api/types';
+import { Product, Room, Storage } from '../api/types';
 import { ProductsList } from '../components/ProductsList';
 import { Link } from 'react-router-dom';
 
 export const ProductsPage: FC = () => {
 
     const productsQuery = useQuery<{ products: Product[] }>(Queries.PRODUCTS)
+    const storagesQuery = useQuery<{ storages: Storage[] }>(Queries.STORAGES)
+    const roomsQuery = useQuery<{ rooms: Room[] }>(Queries.ROOMS)
 
     console.log('GQL', productsQuery.loading, productsQuery.data, productsQuery.called, productsQuery.error)
 
@@ -39,7 +41,7 @@ export const ProductsPage: FC = () => {
                 <Card>
                     {productsQuery.loading && <Text>{'CHARGEMENT...'}</Text>}
                     <Link to="/ProductFormPage"><Button>{"Add Product"}</Button></Link>
-                    {productsQuery.data && <ProductsList products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
+                    {roomsQuery.data && storagesQuery.data && productsQuery.data && <ProductsList rooms={roomsQuery.data?.rooms} storages={storagesQuery.data.storages} products={productsQuery.data.products} onDeleteProduct={removeProductGQL} />}
                 </Card>
             </section>
         </main>

@@ -6,8 +6,8 @@ import { StorageItem } from './StorageItem';
 type StoragesListProps = {
     title?: string;
     storages: Storage[];
-    onDeleteStorage: (storageToRemove: Storage) => void;
     rooms: Room[];
+    onDeleteStorage: (storageToRemove: Storage) => void;
 }
 
 export const StoragesList: FC<StoragesListProps> = (props) => {
@@ -19,18 +19,19 @@ export const StoragesList: FC<StoragesListProps> = (props) => {
 
     return (
         <ul>
-            {arrayOfStorages.map((storage) => {
-                const foundRoom = props.rooms.find(room => room.id === storage.roomId)
-                return (
-                    <StorageItem
-                        key={storage.id}
-                        storageProperty={storage}
-                        onDeleteStorageProperty={props.onDeleteStorage}
-                        roomProperty={foundRoom}
-                    />
-                )
-            }
-            )}
+            {
+                arrayOfStorages.map((storage) => {
+                    const foundRoom = props.rooms.find(room => room.id === storage.roomId)
+                    return (
+                        <StorageItem
+                            key={storage.id}
+                            storageProperty={storage}
+                            onDeleteStorageProperty={props.onDeleteStorage}
+                            roomProperty={foundRoom}
+                        />
+                    )
+                }
+                )}
         </ul>
     )
 }
