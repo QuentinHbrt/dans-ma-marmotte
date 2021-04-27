@@ -13,9 +13,8 @@ type StoragesListProps = {
 export const StoragesList: FC<StoragesListProps> = (props) => {
 
     const arrayOfStorages = [...props.storages]
-    arrayOfStorages.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+    arrayOfStorages.sort((a, b) => a.roomId.toLowerCase().localeCompare(b.roomId.toLowerCase()));
     arrayOfStorages.forEach(x => (x))
-
 
     return (
         <ul>
