@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { Room, Storage } from '../api/types';
 import { StorageItem } from './StorageItem';
@@ -16,21 +16,38 @@ export const StoragesList: FC<StoragesListProps> = (props) => {
     arrayOfStorages.sort((a, b) => a.roomId.toLowerCase().localeCompare(b.roomId.toLowerCase()));
     arrayOfStorages.forEach(x => (x))
 
+    const [searchTerm, setSearchTerm] = useState('')
+    const BarStyling = { width: "20rem", background: "#F2F1F9", border: "none", padding: "0.5rem" };
+
     return (
-        <ul>
-            {
-                arrayOfStorages.map((storage) => {
-                    const foundRoom = props.rooms.find(room => room.id === storage.roomId)
-                    return (
-                        <StorageItem
-                            key={storage.id}
-                            storageProperty={storage}
-                            onDeleteStorageProperty={props.onDeleteStorage}
-                            roomProperty={foundRoom}
-                        />
-                    )
-                }
-                )}
-        </ul>
+        <div>
+            <input
+                style={BarStyling}
+                value={searchTerm}
+                placeholder={"search"}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <ul>
+                {
+                    arrayOfStorages.filter((value) => {
+                        if (searchTerm === "") {
+                            return value
+                        } else if (value.name.toLowerCase().includes(searchTerm.toLocaleLowerCase())) {
+                            return value
+                        }
+                    }).map((storage) => {
+                        const foundRoom = props.rooms.find(room => room.id === storage.roomId)
+                        return (
+                            <StorageItem
+                                key={storage.id}
+                                storageProperty={storage}
+                                onDeleteStorageProperty={props.onDeleteStorage}
+                                roomProperty={foundRoom}
+                            />
+                        )
+                    }
+                    )}
+            </ul>
+        </div>
     )
 }
