@@ -1,4 +1,3 @@
-import { Card } from "@theme-ui/components";
 import React, { FC } from "react";
 import { Room } from "../../api/types";
 import { Button } from "../Button/ButtonElement";
