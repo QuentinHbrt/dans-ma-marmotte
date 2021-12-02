@@ -1,9 +1,3 @@
-import {
-  ApolloClient,
-  ApolloProvider,
-  InMemoryCache,
-  HttpLink,
-} from "@apollo/client";
 import React from "react";
 import ReactDOM from "react-dom";
 import { ThemeProvider } from "theme-ui";
@@ -12,28 +6,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { theme } from "./theme";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { setContext } from "@apollo/client/link/context";
-import { AUTH_TOKEN } from "./api/constants";
-
-const authLink = setContext((_, { headers }) => {
-  // const user = netlifyIdentity.currentUser();
-  const token = localStorage.getItem(AUTH_TOKEN);
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    },
-  };
-});
-
-const httpLink = new HttpLink({
-  uri: "/",
-});
-
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-});
+import { ApolloProvider } from "@apollo/client";
 
 ReactDOM.render(
   <React.StrictMode>
