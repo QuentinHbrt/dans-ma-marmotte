@@ -53,6 +53,7 @@ export const RoomsList: FC<RoomsListProps> = (props) => {
               ) {
                 return value;
               }
+              return false;
             })
             .map((room) => (
               <RoomItem

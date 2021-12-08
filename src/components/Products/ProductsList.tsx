@@ -55,6 +55,7 @@ export const ProductsList: FC<ProductsListProps> = (props) => {
               ) {
                 return value;
               }
+              return false;
             })
             .map((product) => {
               const foundStorage = props.storages.find(

@@ -55,6 +55,7 @@ export const StoragesList: FC<StoragesListProps> = (props) => {
               ) {
                 return value;
               }
+              return false;
             })
             .map((storage) => {
               const foundRoom = props.rooms.find(
